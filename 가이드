@@ -43,7 +43,7 @@ BList = [min_value + step * i for i in range(16)]
 average = sum() / len()
 print(aveage)
 # 평균값의 88.7% 계산 
-
+result = average * 0.887
 # 출력
 
 # 데이터 입력 받기
