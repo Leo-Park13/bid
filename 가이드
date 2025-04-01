@@ -39,3 +39,11 @@ step = diff / 15 # 15등분 15개의 공에 하나씩 배정 예정
 BList = [min_value + step * i for i in range(16)]
 
 # 15개의 번호 중에서 뽑힌 번호들의 금액(?)의 평균값을 구하기 
+ 
+average = sum() / len()
+print(aveage)
+# 평균값의 88.7% 계산 
+
+# 출력
+
+# 데이터 입력 받기
