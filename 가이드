@@ -87,3 +87,6 @@ percent_input = float(input("퍼센트 값을 입력하세요 (예: 2): "))
 result = get_random_values(num, percent_input)
 print("최종 추출된 3개 (공 번호, 값): {}".format(result))
 
+
+
+
