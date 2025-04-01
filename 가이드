@@ -46,4 +46,4 @@ print(aveage)
 result = average * 0.887
 # 출력
 
-# 데이터 입력 받기
+# + 데이터 입력 받기
