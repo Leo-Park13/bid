@@ -1,0 +1,39 @@
+투찰 
+금액(Nnum)에 +-2%를 공 1번-15번 까지 적용후 배치
+(데이터에서 가장 많이 뽑힌 숫자) n개를 랜덤(random 함수)로 뽑고 뽑힌 공 n개의
+평균 값을 구함 그리고 그 평균에 88.7%를 계산하여 출력된 값의 근사치에 작성 
+
+번호 n개(excel 데이터에서 가장 많이 낙찰(?)된 번호 or 그냥 번호 n개)가 나옴 
+뽑힌 n개의 공을 합 후 평균을 구함 그 다음 평균에 88.7%를 계산
+(여기서 excel에서 가장 많이 낙찰된 근사치?가 추출? or 안받고 그냥 추출?)
+결과(print) 내기
+
+# 공 n개 뽑기
+import random
+
+Bnum = float(input(“공을 몇개 추출 할까요?”))
+Lnum = random.sample(range(1,16),Bnum) # 1부터 15번 번호 n개 추출
+print(Lnum)
+
+# 금액, 퍼센트 입력
+
+Nnum = float(input(“금액을 입력 해주세요: ”))
+
+#　Nnum(금액)의 +-n% 값
+percent_input = float(input(“퍼센트값 입력해 주세요: ”))
+percent = Nnum * (percent_input / 100)
+min_value = Nnum - percent
+max_value = Nnum + percent
+
+print(“{}의 +-{}%의 범위는 {} ~ {}입니다.”.format(Nnum, percent_input, min_value, max_value))
+
+하면 입력받은 금액(Nnum)의 +-n% 최소값 최대값 출력
+
+#　max_value과 min_value의 차이 계산 후 15등분
+
+diff = max_value – min_value # 차이 계산
+step = diff / 15 # 15등분 15개의 공에 하나씩 배정 예정
+
+# 최대금액과 최소금액의 차이를 15등분 후 공 15개에 배치 
+
+BList = [min_value + step * i for i in range(16)]
