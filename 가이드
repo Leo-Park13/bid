@@ -1,4 +1,6 @@
 투찰 가이드 라인 잡기
+
+
 금액(Nnum)에 +-2%를 공 1번-15번 까지 적용후 배치
 (데이터에서 가장 많이 뽑힌 숫자) n개를 랜덤(random 함수)로 뽑고 뽑힌 공 n개의
 평균 값을 구함 그리고 그 평균에 88.7%를 계산하여 출력된 값의 근사치에 작성 
@@ -138,15 +140,15 @@ result = get_random_values(num, percent_input, Bnum)
 values = [val for _, val in result]
 average = sum(values) / len(values)
 
-print("\n===== 최종 결과 =====")
-print("추출된 {}개 (공 번호, 값): {}".format(Bnum, result))
-print("추출된 공 금액 평균: {:,}".format(int(average)))
-
 # 공 N개의 평균값의 88.7% 계산 
 result = average * 0.887
-# 출력
-print(result)
 
+# 출력
+
+print("\n===== 결과 =====")
+print("추출된 {}개 (공 번호, 값): {}".format(Bnum, result))
+print("추출된 공 금액 평균: {:,}".format(int(average)))
+print("평균을 계산한 결과:{:,}".format(result))
 
 
 
