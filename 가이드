@@ -152,5 +152,6 @@ for i, val in reault:
 print("추출된 공 금액 평균: {:,}".format(int(average)))
 print("평균 금액의 88.7%를 계산한 결과:{:,}".format(result))
 
-
-
+# 추가 할것 + 투찰율 입력 받고 업체수 입력 받아서 입력 받은 수 만큼 랜덤 돌리고 가장 많이 나온 숫자 2개 뽑기
+while Ture:
+   if 
