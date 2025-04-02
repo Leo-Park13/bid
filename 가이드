@@ -147,8 +147,10 @@ result = average * 0.887
 
 print("\n===== 결과 =====")
 print("추출된 {}개 (공 번호, 값): {}".format(Bnum, result))
+for i, val in reault:
+    print("{}번의 공 ->{:,}".format(i,val))
 print("추출된 공 금액 평균: {:,}".format(int(average)))
-print("평균을 계산한 결과:{:,}".format(result))
+print("평균 금액의 88.7%를 계산한 결과:{:,}".format(result))
 
 
 
