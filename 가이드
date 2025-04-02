@@ -93,7 +93,6 @@ print("최종 추출된 {}개 (공 번호, 값): {}".format(Bnum, result))
 
 # 3개의 공의 금액 평균 구하기
 
-
 import random
 
 def get_random_values(num, percent_input, Bnum):
@@ -142,3 +141,12 @@ average = sum(values) / len(values)
 print("\n===== 최종 결과 =====")
 print("추출된 {}개 (공 번호, 값): {}".format(Bnum, result))
 print("추출된 공 금액 평균: {:,}".format(int(average)))
+
+# 공 N개의 평균값의 88.7% 계산 
+result = average * 0.887
+# 출력
+print(result)
+
+
+
+
