@@ -275,6 +275,165 @@ for num in top_two:
 print("추출된 공 금액 평균: {:,} 원".format(int(average)))
 print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(deduct)))
 
+# 2차 수정
+
+import random
+from collections import Counter
+
+
+
+# 실행
+
+Snum = int(input("기준 금액을 입력하세요: "))
+# Bnum = int(input("공을 몇 개를 뽑을까요?: "))
+# Bnum을 입력 받은 만큼 BCnum이 생기게 하기
+Bnum = int(input("몇 개의 공 번호를 선택하시겠습니까? : "))
+
+Bresult = []
+
+while len(Bresult) < Bnum:
+    num = int(input("{}번째로 선택할 공 번호 (1~15): ".format(len(Bresult) + 1)))
+
+    if num in Bresult:
+        print("이미 선택한 번호입니다. 다시 입력하세요.\n")
+        continue
+    if not (1 <= num <= 15):
+        print("1번부터 15번 사이 숫자만 입력 가능합니다.\n")
+        continue
+
+    Bresult.append(num)
+
+print("\n!!!번호 선택 완료!!!")
+print("\n내가 선택한 공 → {}".format(", ".join("{}번".format(n) for n in Bresult)))
+
+percent_input = int(input("+-의 값을 입력하세요: "))
+choice = int(input("투찰율 유형을 선택하세요 (1: 88.7%, 2: 87.745%): "))
+if choice == 1:
+    bidnum = 0.887
+elif choice == 2:
+    bidnum = 0.87745
+else:
+    ("1번 2번중 골라 주세요")
+
+
+CompanyCount = int(input("예상 업체수는 얼마 일까요?: "))
+
+def get_random_values(num, percent_input, Bnum):
+    # min, max 계산
+    percent = (num * (percent_input / 100))
+    min_value = num - percent
+    max_value = num + percent
+
+    # 공 번호 선택시 1<N<15 이하 선택 (중복 불가능)
+    # 1 < BCnum1 < 15
+    # 1 < BCnum2 < 15
+
+    # 15등분 리스트 만들기
+    diff = max_value - min_value
+    step = diff / 15
+    value_list = [min_value + step * i for i in range(16)]
+
+    # 공 번호와 값 매핑 (1번~15번)
+    ball_dict = {i: value_list[i] for i in range(1, 16)}
+
+    # N개 랜덤 추출
+    random_indexes = random.sample(range(1, 16), Bnum)
+    random_values = [(i, int(ball_dict[i])) for i in random_indexes]  # 정수로 변환
+
+    # 출력
+    print("\n===== 공 배치 =====")
+    for i in range(1, 16):
+        print("\n{}번 공 → {}".format(i, int(ball_dict[i])))
+
+    print("\n===== 공 범위 =====")
+    print("\n{}의 ±{}% 범위는 {:,} 원 ~ {:,} 원 입니다."
+        .format(int(num), percent_input, int(min_value), int(max_value)))    
+
+    print("\n===== 랜덤 추출된 공 =====")
+    for i, val in random_values:
+        print("\n{}번 공 → {:,} 원 ".format(i, val))
+
+
+    # print("15등분 리스트:\n", [int(v) for v in value_list])
+
+    return random_values
+
+
+# CompanyCount = int(input("예상 업체수는 얼마 일까요?: "))
+
+result = get_random_values(Snum, percent_input, Bnum)
+
+
+# 업체수 입력 받아 그 수만큼 자동 추첨 시작
+random_history = []
+
+for _ in range(CompanyCount):
+    random_indexes = random.sample(range(1, 16), 2)
+    random_history.extend(random_indexes)
+
+counter = Counter(random_history)
+
+top_two = counter.most_common(1)
+
+# search = result[input(top_two)]
+
+for num1, num2 in top_two:
+    print("\n{}번, {}번".format(num1,num2))
+
+
+# 자동추첨된 번호에 배정받은 금액 찾기
+# for num3, num4 in search:
+#    print("{:,}원, {:,}원 ".format(num3, num4))
+
+
+
+# 평균 계산
+values = [val for _, val in result]
+average = sum(values) / len(values)
+
+
+# 평균을 입력 받은 투찰율로 계산
+deduct = average * bidnum
+
+
+# 출력
+
+print("\n===== 결과 =====")
+print("\n선택하신 공 번호: {}"
+      .format(", ".join("{}번".format(n) for n in Bresult)))
+# print("선택하신 공 (공 번호, 값): {}번,{}번".format(BCnum1, BCnum2))
+# for BCnum1, BCnum2 in Bresult:
+#    print("{}번 공 → {} 원".format(BCnum1, BCnum2))
+print("추출된 {}개의 번호와 금액".format(Bnum))
+print("내가 선택한 공 → {}번, {}번".format(Bresult[0], Bresult[1]))
+print("내가 선택한 공의 평균 금액: {:,}원".format(average))
+# print("자동으로 선택된 번호 {},{}".format(i, CompanyCount))
+# top_two = counter.most_common(1)
+print("자동으로 가장 많이 선택된 번호:")
+for num in top_two:
+    print("{}번, {}번".format(num[0],num[1]))
+
+
+finalnum = Bresult + [num for num, _ in top_two]
+
+print("\n최종 4개의 공")
+print("->"," , ".join("{}번".format(n1) for n1 in finalnum))
+
+# 4개 번호의 평균 구하기
+
+avgList = (finalnum)
+avg = sum(avgList) / len(avgList)
+
+ded = avg * bidnum
+
+print(finalnum)
+print(avg)
+print(ded)
+
+print("추출된 공 금액 평균: {:,} 원".format(int(avg)))
+
+print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(ded)))
+
 
 
 # 3ㅊㅏ
