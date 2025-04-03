@@ -381,5 +381,9 @@ print("\n자동으로 가장 많이 선택된 번호:")
 for num, count in top_two:
     print("{}번 → {}회".format(num, count))
 
+finalnum = Bresult + [num for num, _ in top_two]
+print("\n최종 4개의 공")
+print("{}번, {}번, {}번, {}번".format(finalnum[0],finalnum[1],finalnum[2],finalnum[3]))
+
 print("\n추출된 공 금액 평균: {:,} 원".format(int(average)))
 print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(deduct)))
