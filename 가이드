@@ -546,3 +546,6 @@ print("{}번, {}번, {}번, {}번".format(finalnum[0],finalnum[1],finalnum[2],fi
 
 print("\n추출된 공 금액 평균: {:,} 원".format(int(average)))
 print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(deduct)))
+
+
+# +추가 -> 내가 뽑은 공 말고 랜덤으로 선택된 공 2개의 가격과 평균을 구하고 4개의 공을 출력 하면서 공의 금액과 투찰율 계산 결과가 나오게 하기
