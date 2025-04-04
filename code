@@ -3,7 +3,7 @@
 import random
 from collections import Counter
 
-
+  
 def get_random_values(num, percent_input, Bnum):
     # min, max 계산
     percent = (num * (percent_input / 100))
