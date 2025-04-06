@@ -362,3 +362,108 @@ print("최종 선택된 4개 공의 금액 평균: {:,} 원".format(int(final_av
 print("평균 금액의 투찰율({:.1f}%) 계산 결과: {:,} 원".format(bidnum * 100, int(deduct)))
 
 
+4차 GUI 사용
+
+import tkinter as tk
+from tkinter import messagebox
+import random
+from collections import Counter
+
+# 공 배치 계산 함수
+def generate_ball_dict(base, percent, order):
+    min_value = base - (base * percent / 100)
+    max_value = base + (base * percent / 100)
+    step = (max_value - min_value) / 15
+    values = [int(min_value + step * i) for i in range(16)]
+    if order == 'desc':
+        values.reverse()
+    return {i: values[i] for i in range(1, 16)}
+
+# 계산 버튼 이벤트 함수
+def calculate():
+    try:
+        base = int(entry_base.get())
+        bid_rate = float(entry_bid.get()) / 100
+        company_count = int(entry_company.get())
+        percent = 2 if percent_var.get() == 1 else 3
+        order = 'asc' if order_var.get() == 1 else 'desc'
+
+        ball_dict = generate_ball_dict(base, percent, order)
+        selected_balls = random.sample(range(1, 16), 2)
+        selected_values = [ball_dict[i] for i in selected_balls]
+
+        history = []
+        for _ in range(company_count):
+            picks = random.sample(range(1, 16), 2)
+            history.extend(picks)
+
+        counter = Counter(history)
+        top_two = [num for num, _ in counter.most_common(2)]
+        top_values = [ball_dict[i] for i in top_two]
+
+        final_values = selected_values + top_values
+        total = sum(final_values)
+        avg = total / 4
+        result_bid = int(avg * bid_rate)
+
+        result_text = ""
+        result_text += "[선택된 공 번호 및 금액]\n"
+        for i in selected_balls:
+            result_text += f"- {i}번 공: {ball_dict[i]:,} 원\n"
+
+        result_text += "\n[자동 추첨 공 번호 및 금액]\n"
+        for i in top_two:
+            result_text += f"- {i}번 공: {ball_dict[i]:,} 원\n"
+
+        result_text += "\n[계산 결과]\n"
+        result_text += "총합: {:,} 원\n".format(total)
+        result_text += "평균 금액: {:,} 원\n".format(int(avg))
+        result_text += "투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
+
+        result_output.delete("1.0", tk.END)
+        result_output.insert(tk.END, result_text)
+
+    except Exception as e:
+        messagebox.showerror("오류", f"입력 오류: {e}")
+
+# Tkinter GUI 생성
+root = tk.Tk()
+root.title("낙찰하한율 계산기 (Tkinter)")
+
+# 입력 필드
+frame_inputs = tk.Frame(root)
+frame_inputs.pack(padx=10, pady=10)
+
+tk.Label(frame_inputs, text="기초 금액 (원)").grid(row=0, column=0, sticky="w")
+entry_base = tk.Entry(frame_inputs)
+entry_base.grid(row=0, column=1)
+
+tk.Label(frame_inputs, text="투찰율 (%)").grid(row=1, column=0, sticky="w")
+entry_bid = tk.Entry(frame_inputs)
+entry_bid.grid(row=1, column=1)
+
+tk.Label(frame_inputs, text="예상 업체 수").grid(row=2, column=0, sticky="w")
+entry_company = tk.Entry(frame_inputs)
+entry_company.grid(row=2, column=1)
+
+# 퍼센트 선택
+percent_var = tk.IntVar(value=1)
+tk.Label(frame_inputs, text="± 퍼센트 선택").grid(row=3, column=0, sticky="w")
+tk.Radiobutton(frame_inputs, text="±2%", variable=percent_var, value=1).grid(row=3, column=1, sticky="w")
+tk.Radiobutton(frame_inputs, text="±3%", variable=percent_var, value=2).grid(row=3, column=2, sticky="w")
+
+# 정렬 선택
+order_var = tk.IntVar(value=1)
+tk.Label(frame_inputs, text="정렬 방식").grid(row=4, column=0, sticky="w")
+tk.Radiobutton(frame_inputs, text="오름차순", variable=order_var, value=1).grid(row=4, column=1, sticky="w")
+tk.Radiobutton(frame_inputs, text="내림차순", variable=order_var, value=2).grid(row=4, column=2, sticky="w")
+
+# 계산 버튼
+btn_calculate = tk.Button(root, text="계산하기", command=calculate)
+btn_calculate.pack(pady=5)
+
+# 결과 출력창
+result_output = tk.Text(root, height=15, width=60)
+result_output.pack(padx=10, pady=10)
+
+root.mainloop()
