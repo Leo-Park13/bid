@@ -352,7 +352,7 @@ print("\n자동으로 가장 많이 선택된 번호:")
 for num, count in top_two:
     print("{}번 ({}회)".format(num, count))
 
-print("\n★★★ 최종 선택된 4개 공 ★★★")
+print("\n!!! 최종 선택된 4개 공 !!!")
 for n in final_selected:
     price = ball_dict.get(n)
     print(" → {}번 ({:,} 원)".format(n, price))
