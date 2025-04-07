@@ -364,12 +364,12 @@ print("평균 금액의 투찰율({:.1f}%) 계산 결과: {:,} 원".format(bidnu
 
 4차 GUI 사용
 
+
 import tkinter as tk
 from tkinter import messagebox
 import random
 from collections import Counter
 
-# 공 배치 계산 함수
 def generate_ball_dict(base, percent, order):
     min_value = base - (base * percent / 100)
     max_value = base + (base * percent / 100)
@@ -379,7 +379,6 @@ def generate_ball_dict(base, percent, order):
         values.reverse()
     return {i: values[i] for i in range(1, 16)}
 
-# 계산 버튼 이벤트 함수
 def calculate():
     try:
         base = int(entry_base.get())
@@ -388,8 +387,14 @@ def calculate():
         percent = 2 if percent_var.get() == 1 else 3
         order = 'asc' if order_var.get() == 1 else 'desc'
 
+        # 공 번호 직접 입력 받기
+        user_input = entry_balls.get()
+        selected_balls = [int(x.strip()) for x in user_input.split(',') if x.strip().isdigit()]
+
+        if len(selected_balls) != 2 or not all(1 <= n <= 15 for n in selected_balls):
+            raise ValueError("1~15 사이의 공 번호 2개를 입력해주세요.")
+
         ball_dict = generate_ball_dict(base, percent, order)
-        selected_balls = random.sample(range(1, 16), 2)
         selected_values = [ball_dict[i] for i in selected_balls]
 
         history = []
@@ -426,11 +431,9 @@ def calculate():
     except Exception as e:
         messagebox.showerror("오류", f"입력 오류: {e}")
 
-# Tkinter GUI 생성
 root = tk.Tk()
 root.title("낙찰하한율 계산기 (Tkinter)")
 
-# 입력 필드
 frame_inputs = tk.Frame(root)
 frame_inputs.pack(padx=10, pady=10)
 
@@ -446,24 +449,25 @@ tk.Label(frame_inputs, text="예상 업체 수").grid(row=2, column=0, sticky="w
 entry_company = tk.Entry(frame_inputs)
 entry_company.grid(row=2, column=1)
 
-# 퍼센트 선택
 percent_var = tk.IntVar(value=1)
 tk.Label(frame_inputs, text="± 퍼센트 선택").grid(row=3, column=0, sticky="w")
 tk.Radiobutton(frame_inputs, text="±2%", variable=percent_var, value=1).grid(row=3, column=1, sticky="w")
 tk.Radiobutton(frame_inputs, text="±3%", variable=percent_var, value=2).grid(row=3, column=2, sticky="w")
 
-# 정렬 선택
 order_var = tk.IntVar(value=1)
 tk.Label(frame_inputs, text="정렬 방식").grid(row=4, column=0, sticky="w")
 tk.Radiobutton(frame_inputs, text="오름차순", variable=order_var, value=1).grid(row=4, column=1, sticky="w")
 tk.Radiobutton(frame_inputs, text="내림차순", variable=order_var, value=2).grid(row=4, column=2, sticky="w")
 
-# 계산 버튼
+tk.Label(frame_inputs, text="선택할 공 번호 (쉼표로 2개)").grid(row=5, column=0, sticky="w")
+entry_balls = tk.Entry(frame_inputs)
+entry_balls.grid(row=5, column=1, columnspan=2)
+
 btn_calculate = tk.Button(root, text="계산하기", command=calculate)
 btn_calculate.pack(pady=5)
 
-# 결과 출력창
 result_output = tk.Text(root, height=15, width=60)
 result_output.pack(padx=10, pady=10)
 
 root.mainloop()
+
