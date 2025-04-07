@@ -387,12 +387,11 @@ def calculate():
         percent = 2 if percent_var.get() == 1 else 3
         order = 'asc' if order_var.get() == 1 else 'desc'
 
-        # 공 번호 직접 입력 받기
         user_input = entry_balls.get()
         selected_balls = [int(x.strip()) for x in user_input.split(',') if x.strip().isdigit()]
 
-        if len(selected_balls) != 2 or not all(1 <= n <= 15 for n in selected_balls):
-            raise ValueError("1~15 사이의 공 번호 2개를 입력해주세요.")
+        if not selected_balls or not all(1 <= n <= 15 for n in selected_balls):
+            raise ValueError("1~15 사이의 공 번호를 쉼표로 입력해주세요 (최소 1개 이상).")
 
         ball_dict = generate_ball_dict(base, percent, order)
         selected_values = [ball_dict[i] for i in selected_balls]
@@ -406,9 +405,10 @@ def calculate():
         top_two = [num for num, _ in counter.most_common(2)]
         top_values = [ball_dict[i] for i in top_two]
 
+        final_balls = selected_balls + top_two
         final_values = selected_values + top_values
         total = sum(final_values)
-        avg = total / 4
+        avg = total / len(final_values)
         result_bid = int(avg * bid_rate)
 
         result_text = ""
@@ -422,7 +422,8 @@ def calculate():
 
         result_text += "\n[계산 결과]\n"
         result_text += "총합: {:,} 원\n".format(total)
-        result_text += "평균 금액: {:,} 원\n".format(int(avg))
+        result_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
+        result_text += "사용된 공 번호: {}\n".format(", ".join(str(n) for n in final_balls))
         result_text += "투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
 
         result_output.delete("1.0", tk.END)
@@ -459,7 +460,7 @@ tk.Label(frame_inputs, text="정렬 방식").grid(row=4, column=0, sticky="w")
 tk.Radiobutton(frame_inputs, text="오름차순", variable=order_var, value=1).grid(row=4, column=1, sticky="w")
 tk.Radiobutton(frame_inputs, text="내림차순", variable=order_var, value=2).grid(row=4, column=2, sticky="w")
 
-tk.Label(frame_inputs, text="선택할 공 번호 (쉼표로 2개)").grid(row=5, column=0, sticky="w")
+tk.Label(frame_inputs, text="선택할 공 번호 (쉼표로 구분)").grid(row=5, column=0, sticky="w")
 entry_balls = tk.Entry(frame_inputs)
 entry_balls.grid(row=5, column=1, columnspan=2)
 
@@ -470,4 +471,6 @@ result_output = tk.Text(root, height=15, width=60)
 result_output.pack(padx=10, pady=10)
 
 root.mainloop()
+
+
 
