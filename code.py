@@ -475,3 +475,12 @@ result_output = tk.Text(root, height=15, width=60)
 result_output.pack(padx=15, pady=15)
 
 root.mainloop()
+
+
+
+
+# + GUI에 추가 할것 -> 금액 입력 칸에 (,콤마) 들어가게 하기, 계산하기 버튼 키우기, []안의 글씨 굵은 글씨로 변경하기
+금액 칸 따로 만들기 
+
+
+  
