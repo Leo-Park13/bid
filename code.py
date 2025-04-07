@@ -390,7 +390,7 @@ def calculate():
         selected_balls = [int(x.strip()) for x in user_input.split(',') if x.strip().isdigit()]
 
         if not selected_balls or not all(1 <= n <= 15 for n in selected_balls):
-            raise ValueError("1~15 사이의 공 번호를 쉼표로 입력해주세요 (최소 1개 이상).")
+            raise ValueError("1~15 사이의 공 번호를 쉼표로 입력해주세요 .")
 
         ball_dict = generate_ball_dict(base, percent, order)
         selected_values = [ball_dict[i] for i in selected_balls]
@@ -411,7 +411,10 @@ def calculate():
         result_bid = int(avg * bid_rate)
 
         result_text = ""
-        result_text += "[선택된 공 번호 및 금액]\n"
+        result_text +="[공 배치]\n"
+        for i in range(1,16):
+            result_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
+        result_text += "\n[선택된 공 번호 및 금액]\n"
         for i in selected_balls:
             result_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
 
@@ -422,7 +425,7 @@ def calculate():
         result_text += "\n[계산 결과]\n"
         result_text += "사용된 공 번호: {}\n".format(", ".join(str(n) for n in final_balls))
         result_text += "총합: {:,} 원\n".format(total)
-        result_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
+        result_text += "{}개의 공의 평균 금액: {:,} 원\n".format(len(final_values), int(avg))
         result_text += "투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
 
         result_output.delete("1.0", tk.END)
@@ -433,10 +436,10 @@ def calculate():
 
 
 root = tk.Tk()
-root.title("낙찰하한율 계산기 (Tkinter)")
+root.title("투찰 계산기")
 
 frame_inputs = tk.Frame(root)
-frame_inputs.pack(padx=10, pady=10)
+frame_inputs.pack(padx=25, pady=25)
 
 tk.Label(frame_inputs, text="기초 금액 (원)").grid(row=0, column=0, sticky="w")
 entry_base = tk.Entry(frame_inputs)
@@ -469,6 +472,6 @@ btn_calculate = tk.Button(root, text="계산하기", command=calculate)
 btn_calculate.pack(pady=5)
 
 result_output = tk.Text(root, height=15, width=60)
-result_output.pack(padx=10, pady=10)
+result_output.pack(padx=15, pady=15)
 
 root.mainloop()
