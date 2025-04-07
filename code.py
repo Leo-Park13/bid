@@ -364,7 +364,6 @@ print("평균 금액의 투찰율({:.1f}%) 계산 결과: {:,} 원".format(bidnu
 
 4차 GUI 사용
 
-
 import tkinter as tk
 from tkinter import messagebox
 import random
@@ -414,23 +413,24 @@ def calculate():
         result_text = ""
         result_text += "[선택된 공 번호 및 금액]\n"
         for i in selected_balls:
-            result_text += f"- {i}번 공: {ball_dict[i]:,} 원\n"
+            result_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
 
         result_text += "\n[자동 추첨 공 번호 및 금액]\n"
         for i in top_two:
-            result_text += f"- {i}번 공: {ball_dict[i]:,} 원\n"
+            result_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
 
         result_text += "\n[계산 결과]\n"
+        result_text += "사용된 공 번호: {}\n".format(", ".join(str(n) for n in final_balls))
         result_text += "총합: {:,} 원\n".format(total)
         result_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
-        result_text += "사용된 공 번호: {}\n".format(", ".join(str(n) for n in final_balls))
         result_text += "투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
 
         result_output.delete("1.0", tk.END)
         result_output.insert(tk.END, result_text)
 
     except Exception as e:
-        messagebox.showerror("오류", f"입력 오류: {e}")
+        messagebox.showerror("오류", "입력 오류: {}".format(e))
+
 
 root = tk.Tk()
 root.title("낙찰하한율 계산기 (Tkinter)")
@@ -440,29 +440,30 @@ frame_inputs.pack(padx=10, pady=10)
 
 tk.Label(frame_inputs, text="기초 금액 (원)").grid(row=0, column=0, sticky="w")
 entry_base = tk.Entry(frame_inputs)
-entry_base.grid(row=0, column=1)
+entry_base.grid(row=0, column=2)
 
 tk.Label(frame_inputs, text="투찰율 (%)").grid(row=1, column=0, sticky="w")
 entry_bid = tk.Entry(frame_inputs)
-entry_bid.grid(row=1, column=1)
+entry_bid.grid(row=1, column=2)
 
-tk.Label(frame_inputs, text="예상 업체 수").grid(row=2, column=0, sticky="w")
+tk.Label(frame_inputs, text="선택할 공 번호 ").grid(row=2, column=0, sticky="w")
+entry_balls = tk.Entry(frame_inputs)
+entry_balls.grid(row=2, column=2, columnspan=2)
+
+tk.Label(frame_inputs, text="예상 업체 수").grid(row=3, column=0, sticky="w")
 entry_company = tk.Entry(frame_inputs)
-entry_company.grid(row=2, column=1)
+entry_company.grid(row=3, column=2)
 
 percent_var = tk.IntVar(value=1)
-tk.Label(frame_inputs, text="± 퍼센트 선택").grid(row=3, column=0, sticky="w")
-tk.Radiobutton(frame_inputs, text="±2%", variable=percent_var, value=1).grid(row=3, column=1, sticky="w")
-tk.Radiobutton(frame_inputs, text="±3%", variable=percent_var, value=2).grid(row=3, column=2, sticky="w")
+tk.Label(frame_inputs, text="± 퍼센트 선택").grid(row=4, column=0, sticky="w")
+tk.Radiobutton(frame_inputs, text="±2%", variable=percent_var, value=1).grid(row=4, column=1, sticky="w")
+tk.Radiobutton(frame_inputs, text="±3%", variable=percent_var, value=2).grid(row=4, column=2, sticky="w")
 
 order_var = tk.IntVar(value=1)
-tk.Label(frame_inputs, text="정렬 방식").grid(row=4, column=0, sticky="w")
-tk.Radiobutton(frame_inputs, text="오름차순", variable=order_var, value=1).grid(row=4, column=1, sticky="w")
-tk.Radiobutton(frame_inputs, text="내림차순", variable=order_var, value=2).grid(row=4, column=2, sticky="w")
+tk.Label(frame_inputs, text="정렬 방식").grid(row=5, column=0, sticky="w")
+tk.Radiobutton(frame_inputs, text="오름차순", variable=order_var, value=1).grid(row=5, column=1, sticky="w")
+tk.Radiobutton(frame_inputs, text="내림차순", variable=order_var, value=2).grid(row=5, column=2, sticky="w")
 
-tk.Label(frame_inputs, text="선택할 공 번호 (쉼표로 구분)").grid(row=5, column=0, sticky="w")
-entry_balls = tk.Entry(frame_inputs)
-entry_balls.grid(row=5, column=1, columnspan=2)
 
 btn_calculate = tk.Button(root, text="계산하기", command=calculate)
 btn_calculate.pack(pady=5)
@@ -471,6 +472,3 @@ result_output = tk.Text(root, height=15, width=60)
 result_output.pack(padx=10, pady=10)
 
 root.mainloop()
-
-
-
