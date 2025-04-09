@@ -589,7 +589,7 @@ tk.Label(main_frame, text="계산 결과  -> 최종금액", font=("Helvetica", 1
 
 # 최종 금액 출력 Frame
 final_result_frame = tk.Frame(main_frame)
-final_result_frame.grid(row=1, column=1, sticky="w", pady=(5, 0))
+final_result_frame.grid(row=2, column=1, sticky="w", pady=(5, 0))
 
 # 숫자 결과창
 result_output_final = tk.Text(final_result_frame, height=1, width=18, font=("Helvetica", 12, "bold"))
