@@ -480,7 +480,7 @@ root.mainloop()
 
 
 # + GUI에 추가 할것 -> 금액 입력 칸에 (,콤마) 들어가게 하기, 계산하기 버튼 키우기, []안의 글씨 굵은 글씨로 변경하기
-금액 칸 따로 만들기 
+# 금액 칸 따로 만들기 
 
 # 4 아마 최종
 
@@ -559,7 +559,6 @@ def calculate():
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
         full_text += "\n투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
 
-
         result_output_full.delete("1.0", tk.END)
         result_output_full.insert(tk.END, full_text)
 
@@ -587,11 +586,18 @@ result_output_full.grid(row=0, column=1, padx=(20, 0))
 
 # 계산 결과 제목
 tk.Label(main_frame, text="계산 결과  -> 최종금액", font=("Helvetica", 12, "bold")).grid(row=1, column=1, sticky="w", pady=(10, 0))
-tk.Label(main_frame, text="원", font=("Helvetica", 12, "bold")).grid(row=2, column=2, sticky="w", pady=(5, 0))
 
-# 최종 금액 출력창
-result_output_final = tk.Text(main_frame, height=1, width=50, font=("Helvetica", 12, "bold"))
-result_output_final.grid(row=2, column=1, sticky="w")
+# ✅ 최종 금액 출력 Frame
+final_result_frame = tk.Frame(main_frame)
+final_result_frame.grid(row=2, column=1, sticky="w", pady=(5, 0))
+
+# 숫자 결과창
+result_output_final = tk.Text(final_result_frame, height=1, width=50, font=("Helvetica", 12, "bold"))
+result_output_final.pack(side="left")
+
+# '원' 라벨을 바로 옆에
+tk.Label(final_result_frame, text="원", font=("Helvetica", 12, "bold")).pack(side="left", padx=(5, 0))
+
 
 # 입력 필드
 tk.Label(frame_inputs, text="기초 금액 (원)", font=("Helvetica", 11)).grid(row=0, column=0, sticky="w")
@@ -614,7 +620,7 @@ checkbox_frame = tk.Frame(frame_inputs)
 checkbox_frame.grid(row=4, column=0, columnspan=3, sticky="w")
 
 for i in range(15):
-    tk.Checkbutton(checkbox_frame, text="{}번".format(i+1), variable=ball_vars[i], font=("Helvetica", 10)).grid(row=i//5, column=i%5, sticky="w")
+    tk.Checkbutton(checkbox_frame, text="{}번".format(i+1), variable=ball_vars[i], font=("Helvetica", 10)).grid(row=i//5, column=i % 5, sticky="w")
 
 # 퍼센트 선택
 percent_var = tk.IntVar(value=1)
