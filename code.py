@@ -635,7 +635,7 @@ tk.Radiobutton(frame_inputs, text="오름차순", variable=order_var, value=1, f
 tk.Radiobutton(frame_inputs, text="내림차순", variable=order_var, value=2, font=("Helvetica", 11)).grid(row=6, column=2, sticky="w")
 
 # 계산 버튼
-btn_calculate = tk.Button(frame_inputs, text="계산하기", command=calculate, font=("Helvetica", 14, "bold"), bg="#4CAF50", fg="white", width=20, height=2)
+btn_calculate = tk.Button(frame_inputs, text="계산하기", command=calculate, font=("Helvetica", 14, "bold"), bg="#4CAF50", fg="white", width=15, height=2)
 btn_calculate.grid(row=7, column=0, columnspan=3, pady=15)
 
 root.mainloop()
