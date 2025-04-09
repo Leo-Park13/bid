@@ -557,14 +557,14 @@ def calculate():
         full_text += "\n사용된 공 번호:\n"
         for i in final_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
-        full_text += "\n투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
+        full_text += "\n[투찰율 적용 금액 ({}%)]: {:,} 원\n".format(bid_rate * 100, result_bid)
 
         result_output_full.delete("1.0", tk.END)
         result_output_full.insert(tk.END, full_text)
 
         result_output_final.config(bg="#333", fg="white")
         result_output_final.delete("1.0", tk.END)
-        result_output_final.insert(tk.END, "\t\t\t\t\t{:,}".format(result_bid))
+        result_output_final.insert(tk.END, "\t{:,}".format(result_bid))   # 금액 표시
 
     except Exception as e:
         messagebox.showerror("오류", "입력 오류: {}".format(e))
@@ -587,16 +587,16 @@ result_output_full.grid(row=0, column=1, padx=(20, 0))
 # 계산 결과 제목
 tk.Label(main_frame, text="계산 결과  -> 최종금액", font=("Helvetica", 12, "bold")).grid(row=1, column=1, sticky="w", pady=(10, 0))
 
-# ✅ 최종 금액 출력 Frame
+# 최종 금액 출력 Frame
 final_result_frame = tk.Frame(main_frame)
-final_result_frame.grid(row=2, column=1, sticky="w", pady=(5, 0))
+final_result_frame.grid(row=1, column=1, sticky="w", pady=(5, 0))
 
 # 숫자 결과창
-result_output_final = tk.Text(final_result_frame, height=1, width=50, font=("Helvetica", 12, "bold"))
+result_output_final = tk.Text(final_result_frame, height=1, width=18, font=("Helvetica", 12, "bold"))
 result_output_final.pack(side="left")
 
 # '원' 라벨을 바로 옆에
-tk.Label(final_result_frame, text="원", font=("Helvetica", 12, "bold")).pack(side="left", padx=(5, 0))
+tk.Label(final_result_frame, text="원", font=("Helvetica", 12, "bold")).pack(side="right", padx=(5, 0))
 
 
 # 입력 필드
