@@ -484,6 +484,7 @@ root.mainloop()
 
 # 4 아마 최종
 
+
 import tkinter as tk
 from tkinter import messagebox
 import random
@@ -538,7 +539,11 @@ def calculate():
         result_bid = int(avg * bid_rate)
 
         # 전체 결과 텍스트
-        full_text = "[선택된 공 번호 및 금액]\n"
+        full_text = "[공 배치]\n"
+        for i in range(1, 16):
+            full_text += "{}번 공 → {:,} 원\n".format(i, ball_dict[i])
+
+        full_text += "\n[선택된 공 번호 및 금액]\n"
         for i in selected_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
 
@@ -549,21 +554,18 @@ def calculate():
         full_text += "\n[계산 결과]\n"
         full_text += "총합: {:,} 원\n".format(total)
         full_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
-        full_text += "사용된 공 번호:\n"
+        full_text += "\n사용된 공 번호:\n"
         for i in final_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
-        full_text += "투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
+        full_text += "\n투찰율 적용 금액 ({}%): {:,} 원\n".format(bid_rate * 100, result_bid)
 
-        full_text += "\n[공 배치]\n"
-        for i in range(1, 16):
-            full_text += "{}번 공 → {:,} 원\n".format(i, ball_dict[i])
 
         result_output_full.delete("1.0", tk.END)
         result_output_full.insert(tk.END, full_text)
 
         result_output_final.config(bg="#333", fg="white")
         result_output_final.delete("1.0", tk.END)
-        result_output_final.insert(tk.END, "최종금액 ({:.3f}): {:,} 원".format(bid_rate * 100, result_bid))
+        result_output_final.insert(tk.END, "\t\t\t\t\t{:,}".format(result_bid))
 
     except Exception as e:
         messagebox.showerror("오류", "입력 오류: {}".format(e))
@@ -584,10 +586,11 @@ result_output_full = tk.Text(main_frame, height=30, width=60, font=("Helvetica",
 result_output_full.grid(row=0, column=1, padx=(20, 0))
 
 # 계산 결과 제목
-tk.Label(main_frame, text="계산 결과", font=("Helvetica", 12, "bold")).grid(row=1, column=1, sticky="w", pady=(10, 0))
+tk.Label(main_frame, text="계산 결과  -> 최종금액", font=("Helvetica", 12, "bold")).grid(row=1, column=1, sticky="w", pady=(10, 0))
+tk.Label(main_frame, text="원", font=("Helvetica", 12, "bold")).grid(row=2, column=2, sticky="w", pady=(5, 0))
 
 # 최종 금액 출력창
-result_output_final = tk.Text(main_frame, height=1, width=40, font=("Helvetica", 12, "bold"))
+result_output_final = tk.Text(main_frame, height=1, width=50, font=("Helvetica", 12, "bold"))
 result_output_final.grid(row=2, column=1, sticky="w")
 
 # 입력 필드
@@ -630,5 +633,3 @@ btn_calculate = tk.Button(frame_inputs, text="계산하기", command=calculate, 
 btn_calculate.grid(row=7, column=0, columnspan=3, pady=15)
 
 root.mainloop()
-
-  
