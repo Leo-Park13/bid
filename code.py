@@ -498,14 +498,31 @@ def format_number(event):
         entry_base.insert(0, "{:,}".format(int(value)))
 
 
+# ✅ 수정된 공 배치 함수
 def generate_ball_dict(base, percent, order):
     min_value = base - (base * percent / 100)
     max_value = base + (base * percent / 100)
-    step = (max_value - min_value) / 15
-    values = [int(min_value + step * i) for i in range(16)]
+
+    values = [0] * 15  # 1~15번 공 자리 만들기
+
+    values[0] = int(min_value)    # 1번 공
+    values[7] = int(base)         # 8번 공
+    values[14] = int(max_value)   # 15번 공
+
+    # 2~7번 공 (min ~ base 사이 균등)
+    lower_step = (base - min_value) / 7
+    for i in range(1, 7):  # 2~7번
+        values[i] = int(min_value + lower_step * i)
+
+    # 9~14번 공 (base ~ max 사이 균등)
+    upper_step = (max_value - base) / 7
+    for i in range(8, 14):  # 9~14번
+        values[i] = int(base + upper_step * (i - 7))
+
     if order == 'desc':
         values.reverse()
-    return {i: values[i] for i in range(1, 16)}
+
+    return {i + 1: values[i] for i in range(15)}
 
 
 def calculate():
@@ -598,7 +615,6 @@ result_output_final.pack(side="left")
 # '원' 라벨을 바로 옆에
 tk.Label(final_result_frame, text="원", font=("Helvetica", 12, "bold")).pack(side="right", padx=(5, 0))
 
-
 # 입력 필드
 tk.Label(frame_inputs, text="기초 금액 (원)", font=("Helvetica", 11)).grid(row=0, column=0, sticky="w")
 entry_base = tk.Entry(frame_inputs, font=("Helvetica", 11), width=20)
@@ -639,3 +655,7 @@ btn_calculate = tk.Button(frame_inputs, text="계산하기", command=calculate, 
 btn_calculate.grid(row=7, column=0, columnspan=3, pady=15)
 
 root.mainloop()
+
+
+# pip install pyinstaller
+# pyinstaller --noconsole --onefile bidGUI.py 으로 .exe파일 다운
