@@ -657,5 +657,14 @@ btn_calculate.grid(row=7, column=0, columnspan=3, pady=15)
 root.mainloop()
 
 
+
 # pip install pyinstaller
 # pyinstaller --noconsole --onefile bidGUI.py 으로 .exe파일 다운
+
+
+
+# 선택된 공 2개와 랜덤 2개를 포함해서 다시 랜덤을 해서 가장 많이 나온 숫자 4개를 뽑기
+
+
+
+
