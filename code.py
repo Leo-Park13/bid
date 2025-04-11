@@ -362,6 +362,139 @@ print("최종 선택된 4개 공의 금액 평균: {:,} 원".format(int(final_av
 print("평균 금액의 투찰율({:.1f}%) 계산 결과: {:,} 원".format(bidnum * 100, int(deduct)))
 
 
+# 코드 수정본 1차
+
+import random
+from collections import Counter
+
+# 공 배치 및 랜덤 번호 추출 함수
+def get_random_values(num, percent_input, Bnum, order):
+    # ±2% 계산
+    percent = (num * (percent_input / 100))
+    min_value = num - percent
+    max_value = num + percent
+
+    # 15등분 리스트 만들기
+    diff = max_value - min_value
+    step = diff / 15
+    value_list = [min_value + step * i for i in range(16)]
+
+    # 1번과 15번은 고정
+    value_list[1] = min_value  # 1번 공은 최저값
+    value_list[15] = max_value  # 15번 공은 최고값
+    value_list[8] = num  # 8번 공은 기준 금액 고정
+
+    # 정렬 옵션
+    if order == "2":  # 내림차순
+        value_list.reverse()
+
+    # 공 번호와 값 매핑 (1번~15번)
+    ball_dict = {i: int(value_list[i]) for i in range(1, 16)}
+
+    # # N개 랜덤 추출
+    # random_indexes = random.sample(range(1, 16), Bnum)
+    # random_values = [(i, ball_dict[i]) for i in random_indexes]
+
+    # 출력
+    print("\n===== 공 배치 =====")
+    for i in range(1, 16):
+        print("{}번 공 → {:,} 원".format(i, ball_dict[i]))
+
+    # print("\n===== 랜덤 추출된 공 =====")
+    # for i, val in random_values:
+    #     print("{}번 공 → {:,} 원".format(i, val))
+
+    print("\n{}의 ±{}% 범위는 {:,} 원 ~ {:,} 원 입니다."
+          .format(int(num), percent_input, int(min_value), int(max_value)))
+
+    return ball_dict
+
+# ======================
+# 사용자 입력 처리
+# ======================
+Snum = int(input("기준 금액을 입력하세요: "))
+Bnum = int(input("몇 개의 공 번호를 선택하시겠습니까? : "))
+
+Bresult = []
+
+while len(Bresult) < Bnum:
+    num = int(input("{}번째로 선택할 공 번호 (1~15): ".format(len(Bresult) + 1)))
+
+    if num in Bresult:
+        print("이미 선택한 번호입니다. 다시 입력하세요.\n")
+        continue
+    if not (1 <= num <= 15):
+        print("1번부터 15번 사이 숫자만 입력 가능합니다.\n")
+        continue
+
+    Bresult.append(num)
+
+print("\n!!!번호 선택 완료!!!")
+print("\n내가 선택한 공 → {}".format(", ".join("{}번".format(n) for n in Bresult)))
+
+percent_input = int(input("+-의 값을 입력하세요: "))
+choice = int(input("투찰율 유형을 선택하세요 (1: 88.7%, 2: 87.745%): "))
+if choice == 1:
+    bidnum = 0.887
+elif choice == 2:
+    bidnum = 0.87745
+else:
+    print("1번 또는 2번 중 골라 주세요")
+    exit()
+
+order_choice = input("공 배치 금액 정렬 방식을 선택하세요 (1: 오름차순, 2: 내림차순): ")
+
+CompanyCount = int(input("예상 업체수는 얼마 일까요?: "))
+
+# 공 배치 및 랜덤 번호 추출
+ball_dict = get_random_values(Snum, percent_input, Bnum, order_choice)
+
+# ======================
+# 선택된 공 2개 + 랜덤 2개 포함해서 업체 수만큼 랜덤 돌리기
+# ======================
+
+random_history = []
+
+for _ in range(CompanyCount):
+    # Bresult 2개 번호 포함
+    selected = list(Bresult)
+
+    # 선택된 Bresult 포함 나머지 1~15 중에서 랜덤 4개 추출
+    remaining_numbers = list(set(range(1, 16)))
+    extra_randoms = random.sample(remaining_numbers, 4)
+
+    selected.extend(extra_randoms)
+    random_history.extend(selected)
+
+# 가장 많이 등장한 번호 4개 추출
+counter = Counter(random_history)
+top_four = counter.most_common(4)
+
+# 최종 선택된 번호와 금액 계산
+final_selected = [num for num, _ in top_four]
+final_values = [ball_dict[n] for n in final_selected]
+final_sum = sum(final_values)
+final_avg = final_sum / len(final_values)
+deduct = final_avg * bidnum
+
+# ======================
+# 출력 결과
+# ======================
+print("\n===== 선택한 공 2개 -> 랜덤 4개 최종 결과 =====")
+print("가장 많이 선택된 번호 (혼합 기준):")
+for Rnum, count in top_four:
+    print(" → {}번 ({}회)".format(Rnum, count))
+
+print("\n최종 선택된 4개 공 (혼합 기준):")
+for n in final_selected:
+    price = ball_dict.get(n)
+    print(" → {}번 ({:,} 원)".format(n, price))
+
+print("\n합계: {:,} 원".format(final_sum))
+print("평균: {:,} 원".format(int(final_avg)))
+print("투찰율 적용({:.3f}%): {:,} 원".format(bidnum * 100, int(deduct)))
+
+
 4차 GUI 사용
 
 import tkinter as tk
