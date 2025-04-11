@@ -631,25 +631,22 @@ def format_number(event):
         entry_base.insert(0, "{:,}".format(int(value)))
 
 
-# ✅ 수정된 공 배치 함수
+# 공 금액 생성 함수
 def generate_ball_dict(base, percent, order):
     min_value = base - (base * percent / 100)
     max_value = base + (base * percent / 100)
 
-    values = [0] * 15  # 1~15번 공 자리 만들기
+    values = [0] * 15
+    values[0] = int(min_value)
+    values[7] = int(base)
+    values[14] = int(max_value)
 
-    values[0] = int(min_value)    # 1번 공
-    values[7] = int(base)         # 8번 공
-    values[14] = int(max_value)   # 15번 공
-
-    # 2~7번 공 (min ~ base 사이 균등)
     lower_step = (base - min_value) / 7
-    for i in range(1, 7):  # 2~7번
+    for i in range(1, 7):
         values[i] = int(min_value + lower_step * i)
 
-    # 9~14번 공 (base ~ max 사이 균등)
     upper_step = (max_value - base) / 7
-    for i in range(8, 14):  # 9~14번
+    for i in range(8, 14):
         values[i] = int(base + upper_step * (i - 7))
 
     if order == 'desc':
@@ -666,7 +663,7 @@ def calculate():
         percent = 2 if percent_var.get() == 1 else 3
         order = 'asc' if order_var.get() == 1 else 'desc'
 
-        selected_balls = [i+1 for i, var in enumerate(ball_vars) if var.get() == 1]
+        selected_balls = [i + 1 for i, var in enumerate(ball_vars) if var.get() == 1]
         if not selected_balls or not all(1 <= n <= 15 for n in selected_balls):
             raise ValueError("1~15 사이의 공 번호를 최소 1개 이상 선택해주세요.")
 
@@ -674,21 +671,23 @@ def calculate():
         selected_values = [ball_dict[i] for i in selected_balls]
 
         history = []
+        history.extend(selected_balls)
         for _ in range(company_count):
             picks = random.sample(range(1, 16), 2)
             history.extend(picks)
+        
 
         counter = Counter(history)
-        top_two = [num for num, _ in counter.most_common(2)]
+        top_two = [num for num, _ in counter.most_common(4)]
         top_values = [ball_dict[i] for i in top_two]
 
-        final_balls = selected_balls + top_two
-        final_values = selected_values + top_values
+        final_balls = top_two
+        final_values = top_values
         total = sum(final_values)
         avg = total / len(final_values)
         result_bid = int(avg * bid_rate)
 
-        # 전체 결과 텍스트
+        # 전체 결과 텍스트 출력
         full_text = "[공 배치]\n"
         for i in range(1, 16):
             full_text += "{}번 공 → {:,} 원\n".format(i, ball_dict[i])
@@ -697,24 +696,25 @@ def calculate():
         for i in selected_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
 
-        full_text += "\n[자동 추첨 공 번호 및 금액]\n"
+        full_text += "\n[자동 추첨 공 번호 및 횟수]\n"
         for i in top_two:
-            full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
+            full_text += "- {}번 공: {} 회\n".format(i, counter[i])
 
-        full_text += "\n[계산 결과]\n"
-        full_text += "총합: {:,} 원\n".format(total)
-        full_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
         full_text += "\n사용된 공 번호:\n"
         for i in final_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
         full_text += "\n[투찰율 적용 금액 ({}%)]: {:,} 원\n".format(bid_rate * 100, result_bid)
+
+        full_text += "\n[계산 결과]\n"
+        full_text += "총합: {:,} 원\n".format(total)
+        full_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
 
         result_output_full.delete("1.0", tk.END)
         result_output_full.insert(tk.END, full_text)
 
         result_output_final.config(bg="#333", fg="white")
         result_output_final.delete("1.0", tk.END)
-        result_output_final.insert(tk.END, "\t{:,}".format(result_bid))   # 금액 표시
+        result_output_final.insert(tk.END, "\t{:,}".format(result_bid))
 
     except Exception as e:
         messagebox.showerror("오류", "입력 오류: {}".format(e))
@@ -734,21 +734,16 @@ frame_inputs.grid(row=0, column=0, sticky="n")
 result_output_full = tk.Text(main_frame, height=30, width=60, font=("Helvetica", 11))
 result_output_full.grid(row=0, column=1, padx=(20, 0))
 
-# 계산 결과 제목
 tk.Label(main_frame, text="계산 결과  -> 최종금액", font=("Helvetica", 12, "bold")).grid(row=1, column=1, sticky="w", pady=(10, 0))
 
-# 최종 금액 출력 Frame
 final_result_frame = tk.Frame(main_frame)
 final_result_frame.grid(row=2, column=1, sticky="w", pady=(5, 0))
 
-# 숫자 결과창
 result_output_final = tk.Text(final_result_frame, height=1, width=18, font=("Helvetica", 12, "bold"))
 result_output_final.pack(side="left")
-
-# '원' 라벨을 바로 옆에
 tk.Label(final_result_frame, text="원", font=("Helvetica", 12, "bold")).pack(side="right", padx=(5, 0))
 
-# 입력 필드
+# 입력 필드 구성
 tk.Label(frame_inputs, text="기초 금액 (원)", font=("Helvetica", 11)).grid(row=0, column=0, sticky="w")
 entry_base = tk.Entry(frame_inputs, font=("Helvetica", 11), width=20)
 entry_base.grid(row=0, column=1)
@@ -769,7 +764,7 @@ checkbox_frame = tk.Frame(frame_inputs)
 checkbox_frame.grid(row=4, column=0, columnspan=3, sticky="w")
 
 for i in range(15):
-    tk.Checkbutton(checkbox_frame, text="{}번".format(i+1), variable=ball_vars[i], font=("Helvetica", 10)).grid(row=i//5, column=i % 5, sticky="w")
+    tk.Checkbutton(checkbox_frame, text="{}번".format(i + 1), variable=ball_vars[i], font=("Helvetica", 10)).grid(row=i // 5, column=i % 5, sticky="w")
 
 # 퍼센트 선택
 percent_var = tk.IntVar(value=1)
@@ -791,13 +786,8 @@ root.mainloop()
 
 
 
-# pip install pyinstaller
-# pyinstaller --noconsole --onefile bidGUI.py 으로 .exe파일 다운
 
-
-
-# 선택된 공 2개를 포함해서 다시 랜덤을 하고 그 중에서 가장 많이 나온 숫자 4개를 뽑기
-
+# 선택된 공 2개와 랜덤 2개를 포함해서 다시 랜덤을 해서 가장 많이 나온 숫자 4개를 뽑기
 
 
 
