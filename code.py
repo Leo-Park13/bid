@@ -722,7 +722,7 @@ def calculate():
 
 # === GUI 구성 ===
 root = tk.Tk()
-root.title("낙찰하한율 계산기")
+root.title("투찰 계산기")
 
 main_frame = tk.Frame(root)
 main_frame.pack(padx=10, pady=10)
