@@ -6,7 +6,7 @@ import random
 from collections import Counter
 
 
-def format_number(event):
+def format_number(event):           # 기초 금액
     value = entry_base.get().replace(",", "")
     if value.isdigit():
         entry_base.delete(0, tk.END)
@@ -37,7 +37,7 @@ def generate_ball_dict(base, percent, order):
     return {i + 1: values[i] for i in range(15)}
 
 
-def calculate():
+def calculate():        # 계산 함수
     try:
         base = int(entry_base.get().replace(",", ""))
         bid_rate = float(entry_bid.get()) / 100     # 투찰율 % 적용
@@ -49,7 +49,7 @@ def calculate():
         if not selected_balls or not all(1 <= n <= 15 for n in selected_balls):
             raise ValueError("1~15 사이의 공 번호를 최소 1개 이상 선택해주세요.")
 
-        ball_dict = generate_ball_dict(base, percent, order)        # 공 리스트에 금액 배치치
+        ball_dict = generate_ball_dict(base, percent, order)        # 공 리스트에 금액 배치
 
         history = []        # 공 선택 후 다시 랜덤의 공 출력
         history.extend(selected_balls)
@@ -164,6 +164,7 @@ btn_calculate = tk.Button(frame_inputs, text="계산하기", command=calculate, 
 btn_calculate.grid(row=7, column=0, columnspan=3, pady=15)
 
 root.mainloop()
+
 
 
 
