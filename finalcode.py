@@ -6,6 +6,7 @@ import random
 from collections import Counter
 
 
+
 def format_number(event):           # 기초 금액
     value = entry_base.get().replace(",", "")
     if value.isdigit():
@@ -19,9 +20,9 @@ def generate_ball_dict(base, percent, order):
     max_value = base + (base * percent / 100)       # +n 적용
 
     values = [0] * 15   # 최대금액 최소금액 기초금액 설정 및 가격을 15개의 공 배치
-    values[0] = int(min_value)    # -n의 최소금액
-    values[7] = int(base)          # 입력 받은 n의 금액
-    values[14] = int(max_value)    # +n의 최대금액
+    values[0] = int(min_value)
+    values[7] = int(base)
+    values[14] = int(max_value)
 
     lower_step = (base - min_value) / 7     # 기초금액 보단 작은 수 -n%
     for i in range(1, 7):
@@ -31,13 +32,13 @@ def generate_ball_dict(base, percent, order):
     for i in range(8, 14):
         values[i] = int(base + upper_step * (i - 7))
 
-    if order == 'desc':
+    if order == 'desc':     # 정렬 방식을 내림차순으로 선택시 공 배치를 거꾸로 돌린다
         values.reverse()
 
-    return {i + 1: values[i] for i in range(15)}
+    return {i + 1: values[i] for i in range(15)}    # 공에 금액을 배치 할때 i 하나에 금액 하나 i는 +1씩 증가한다
 
 
-def calculate():        # 계산 함수
+def calculate():                        # 계산 함수
     try:
         base = int(entry_base.get().replace(",", ""))
         bid_rate = float(entry_bid.get()) / 100     # 투찰율 % 적용
@@ -62,9 +63,9 @@ def calculate():        # 계산 함수
         top_four = [num for num, _ in counter.most_common(4)]   # 가장 많이 출력된 4개의 공 출력
         top_values = [ball_dict[i] for i in top_four]       # 랜덤 출력된 공들이 탑4 리스트에 들어감 
 
-        final_balls = top_four               # 전체 공에서 top_four 출력
-        final_values = top_values              # 선택된 공 리스트를 다시 리스트화 하기기
-        total = sum(final_values)               # 최종금액의 합합
+        final_balls = top_four               # 전체 공에서 탑4 출력
+        final_values = top_values              # 선택된 공 리스트를 다시 리스트화 하기
+        total = sum(final_values)               # 최종금액의 합
         avg = total / len(final_values)         # 최종금액의 평균
         result_bid = int(avg * bid_rate)        # 평균 금액에 투찰율 적용
 
@@ -99,6 +100,7 @@ def calculate():        # 계산 함수
 
     except Exception as e:
         messagebox.showerror("오류", "입력 오류: {}".format(e))
+
 
 
 # === GUI 구성 ===
