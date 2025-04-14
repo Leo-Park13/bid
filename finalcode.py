@@ -40,7 +40,7 @@ def generate_ball_dict(base, percent, order):
 def calculate():
     try:
         base = int(entry_base.get().replace(",", ""))
-        bid_rate = float(entry_bid.get()) / 100     # 투찰율 % 적용용
+        bid_rate = float(entry_bid.get()) / 100     # 투찰율 % 적용
         company_count = int(entry_company.get())    # 예상 참여 업체수 (랜덤 공 출력 횟수)
         percent = 2 if percent_var.get() == 1 else 3    # +- 퍼센트 적용
         order = 'asc' if order_var.get() == 1 else 'desc'   # 정렬 방식 적용
