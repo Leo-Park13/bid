@@ -14,20 +14,20 @@ def format_number(event):
 
 
 # 공 금액 생성 함수
-def generate_ball_dict(base, percent, order):
-    min_value = base - (base * percent / 100)
-    max_value = base + (base * percent / 100)
+def generate_ball_dict(base, percent, order):       
+    min_value = base - (base * percent / 100)       # -n 적용
+    max_value = base + (base * percent / 100)       # +n 적용
 
-    values = [0] * 15
+    values = [0] * 15   # 최대금액 최소금액 기초금액 설정 및 가격을 15개의 공 배치
     values[0] = int(min_value)
     values[7] = int(base)
     values[14] = int(max_value)
 
-    lower_step = (base - min_value) / 7
+    lower_step = (base - min_value) / 7     # 기초금액 보단 작은 수 -n%
     for i in range(1, 7):
         values[i] = int(min_value + lower_step * i)
 
-    upper_step = (max_value - base) / 7
+    upper_step = (max_value - base) / 7     # 기초금액 보단 큰 수 +n%
     for i in range(8, 14):
         values[i] = int(base + upper_step * (i - 7))
 
@@ -40,34 +40,33 @@ def generate_ball_dict(base, percent, order):
 def calculate():
     try:
         base = int(entry_base.get().replace(",", ""))
-        bid_rate = float(entry_bid.get()) / 100
-        company_count = int(entry_company.get())
-        percent = 2 if percent_var.get() == 1 else 3
-        order = 'asc' if order_var.get() == 1 else 'desc'
+        bid_rate = float(entry_bid.get()) / 100     # 투찰율 % 적용용
+        company_count = int(entry_company.get())    # 예상 참여 업체수 (랜덤 공 출력 횟수)
+        percent = 2 if percent_var.get() == 1 else 3    # +- 퍼센트 적용
+        order = 'asc' if order_var.get() == 1 else 'desc'   # 정렬 방식 적용
 
-        selected_balls = [i + 1 for i, var in enumerate(ball_vars) if var.get() == 1]
+        selected_balls = [i + 1 for i, var in enumerate(ball_vars) if var.get() == 1]       # 1번부터 15번 까지 공 선택택
         if not selected_balls or not all(1 <= n <= 15 for n in selected_balls):
             raise ValueError("1~15 사이의 공 번호를 최소 1개 이상 선택해주세요.")
 
-        ball_dict = generate_ball_dict(base, percent, order)
-        selected_values = [ball_dict[i] for i in selected_balls]
+        ball_dict = generate_ball_dict(base, percent, order)        # 공 리스트에 금액 배치치
 
-        history = []
+        history = []        # 공 선택 후 다시 랜덤의 공 출력
         history.extend(selected_balls)
-        for _ in range(company_count):
-            picks = random.sample(range(1, 16), 2)
-            history.extend(picks)
+        for _ in range(company_count):          # 예상업체수 만큼 랜덤 횟수 
+            picks = random.sample(range(1, 16), 2)      # 15개의 공에서 2개를 선택
+            history.extend(picks)                   # 리스트에 추가가
         
 
-        counter = Counter(history)
-        top_two = [num for num, _ in counter.most_common(4)]
-        top_values = [ball_dict[i] for i in top_two]
+        counter = Counter(history)      # history 리스트 횟수
+        top_four = [num for num, _ in counter.most_common(4)]   # 가장 많이 출력된 4개의 공 출력
+        top_values = [ball_dict[i] for i in top_four]       # 랜덤 출력된 공들이 탑4 리스트에 들어감 
 
-        final_balls = top_two
-        final_values = top_values
-        total = sum(final_values)
-        avg = total / len(final_values)
-        result_bid = int(avg * bid_rate)
+        final_balls = top_four               # 전체 공에서 top_four 출력
+        final_values = top_values              # 선택된 공 리스트를 다시 리스트화 하기기
+        total = sum(final_values)               # 최종금액의 합합
+        avg = total / len(final_values)         # 최종금액의 평균
+        result_bid = int(avg * bid_rate)        # 평균 금액에 투찰율 적용
 
         # 전체 결과 텍스트 출력
         full_text = "[공 배치]\n"
@@ -79,7 +78,7 @@ def calculate():
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
 
         full_text += "\n[자동 추첨 공 번호 및 횟수]\n"
-        for i in top_two:
+        for i in top_four:
             full_text += "- {}번 공: {} 회\n".format(i, counter[i])
 
         full_text += "\n사용된 공 번호:\n"
