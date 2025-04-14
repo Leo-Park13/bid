@@ -58,7 +58,7 @@ def calculate():        # 계산 함수
             history.extend(picks)                   # 리스트에 추가가
         
 
-        counter = Counter(history)      # history 리스트 횟수
+        counter = Counter(history)      # history 리스트의 랜덤 횟수를 카운트
         top_four = [num for num, _ in counter.most_common(4)]   # 가장 많이 출력된 4개의 공 출력
         top_values = [ball_dict[i] for i in top_four]       # 랜덤 출력된 공들이 탑4 리스트에 들어감 
 
