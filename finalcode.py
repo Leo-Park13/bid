@@ -19,9 +19,9 @@ def generate_ball_dict(base, percent, order):
     max_value = base + (base * percent / 100)       # +n 적용
 
     values = [0] * 15   # 최대금액 최소금액 기초금액 설정 및 가격을 15개의 공 배치
-    values[0] = int(min_value)
-    values[7] = int(base)
-    values[14] = int(max_value)
+    values[0] = int(min_value)    # -n의 최소금액
+    values[7] = int(base)          # 입력 받은 n의 금액
+    values[14] = int(max_value)    # +n의 최대금액
 
     lower_step = (base - min_value) / 7     # 기초금액 보단 작은 수 -n%
     for i in range(1, 7):
