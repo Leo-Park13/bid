@@ -85,11 +85,12 @@ def calculate():                        # 계산 함수
         full_text += "\n사용된 공 번호:\n"
         for i in final_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
-        full_text += "\n[투찰율 적용 금액 ({}%)]: {:,} 원\n".format(bid_rate * 100, result_bid)
-
+            
         full_text += "\n[계산 결과]\n"
         full_text += "총합: {:,} 원\n".format(total)
         full_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
+
+        full_text += "\n[투찰율 적용 금액 ({}%)]: {:,} 원\n".format(bid_rate * 100, result_bid)
 
         result_output_full.delete("1.0", tk.END)
         result_output_full.insert(tk.END, full_text)
