@@ -167,6 +167,8 @@ btn_calculate.grid(row=7, column=0, columnspan=3, pady=15)
 
 root.mainloop()
 
+# pip install pyinstaller
+#python -m PyInstaller -w -F name.py
 
 
 
