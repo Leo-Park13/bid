@@ -797,6 +797,7 @@ root.mainloop()
 
 import random
 
+
 def generate_ball_dict(base, percent, order):
     min_value = base * (1 - percent / 100)
     max_value = base * (1 + percent / 100)
@@ -804,10 +805,10 @@ def generate_ball_dict(base, percent, order):
 
     values = [0] * 15
     values[0] = round(min_value)        # 1번 공 = 최소값
-    values[mid_index] = round(base)     # 8번 공 = 기준값
+    values[mid_index] = round(base)     # 8번 공 = 기초금액액
     values[14] = round(max_value)       # 15번 공 = 최대값
 
-    noise_ratio = 0.005  # 🎯 더 좁은 분포로: 0.5% noise 적용
+    noise_ratio = 0.7  # 🎯 더 좁은 분포로: n% noise 적용
 
     # 왼쪽 구간: 2~7번 (index 1~6)
     step_left = (base - min_value) / 7
@@ -830,6 +831,8 @@ def generate_ball_dict(base, percent, order):
     # 공 번호 매핑 (1번부터 15번까지)
     ball_dict = {i + 1: values[i] for i in range(15)}
     return ball_dict
+
+
 
 1번 공 → 97,000,000 원
 2번 공 → 97,428,423 원
