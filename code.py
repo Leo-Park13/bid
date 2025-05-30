@@ -798,47 +798,52 @@ root.mainloop()
 import random
 
 
-def generate_ball_dict(base, percent, order):
+import random
+
+def generate_ball_dict(base, percent=0.5, order='asc', noise_ratio=0.01):
     min_value = base * (1 - percent / 100)
     max_value = base * (1 + percent / 100)
-    mid_index = 7  # 8번 공 위치 (기준값 자리)
+    mid_index = 7  # 8번 공 인덱스
 
     values = [0] * 15
-    values[0] = round(min_value)        # 1번 공 = 최소값
-    values[mid_index] = round(base)     # 8번 공 = 기초금액액
-    values[14] = round(max_value)       # 15번 공 = 최대값
 
-    noise_ratio = 0.7  # 🎯 더 좁은 분포로: n% noise 적용
+    # 🎯 1번 공 (최솟값에서 noise 추가 → 범위 안 유지)
+    step_left_base = base - min_value
+    while True:
+        val = min_value + random.uniform(-step_left_base * noise_ratio, step_left_base * noise_ratio)
+        if val >= min_value:
+            values[0] = round(val)
+            break
 
-    # 왼쪽 구간: 2~7번 (index 1~6)
-    step_left = (base - min_value) / 7
-    for i in range(1, mid_index):
-        clean_value = min_value + step_left * i
-        noise = random.uniform(-step_left * noise_ratio, step_left * noise_ratio)
-        values[i] = round(clean_value + noise)
-
-    # 오른쪽 구간: 9~14번 (index 8~13)
-    step_right = (max_value - base) / 7
-    for i in range(mid_index + 1, 14):
-        clean_value = base + step_right * (i - mid_index)
-        noise = random.uniform(-step_right * noise_ratio, step_right * noise_ratio)
-        values[i] = round(clean_value + noise)
-
-    # 공 배치를 내림차순으로 정렬하고 싶다면
-    if order == 'desc':
-        values.reverse()  # 리스트 뒤집기
-
-    # 공 번호 매핑 (1번부터 15번까지)
-    ball_dict = {i + 1: values[i] for i in range(15)}
-    return ball_dict
-
-# 1번, 8번, 15번 공도 noise_ratio 비율만큼 랜덤 오차 적용
-    base_noise_min = (base - min_value) * noise_ratio
-    base_noise_max = (max_value - base) * noise_ratio
-
-    values[0] = round(min_value + random.uniform(-base_noise_min, base_noise_min))
+    # 🎯 8번 공 (기준값에서 noise 적용 가능)
     values[mid_index] = round(base + random.uniform(-base * noise_ratio, base * noise_ratio))
-    values[14] = round(max_value + random.uniform(-base_noise_max, base_noise_max))
+
+    # 🎯 15번 공 (최댓값에서 noise 추가 → 범위 안 유지)
+    step_right_base = max_value - base
+    while True:
+        val = max_value + random.uniform(-step_right_base * noise_ratio, step_right_base * noise_ratio)
+        if val <= max_value:
+            values[14] = round(val)
+            break
+
+    # 왼쪽 공 (2~7번)
+    step_left = (values[mid_index] - values[0]) / 7
+    for i in range(1, mid_index):
+        base_val = values[0] + step_left * i
+        noise = random.uniform(-step_left * noise_ratio, step_left * noise_ratio)
+        values[i] = round(base_val + noise)
+
+    # 오른쪽 공 (9~14번)
+    step_right = (values[14] - values[mid_index]) / 7
+    for i in range(mid_index + 1, 14):
+        base_val = values[mid_index] + step_right * (i - mid_index)
+        noise = random.uniform(-step_right * noise_ratio, step_right * noise_ratio)
+        values[i] = round(base_val + noise)
+
+    if order == 'desc':
+        values.reverse()
+
+    return {i + 1: values[i] for i in range(15)}
 
    
 
