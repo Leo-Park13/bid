@@ -717,34 +717,36 @@ print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(final_ded)
 
 # =========================================================================
 
-
-
 import random
 
 def generate_ball_dict_randomized(base, percent):
-    min_value = base * (1 - percent / 100)
-    max_value = base * (1 + percent / 100)
-    mid_index = 7  # 8번 공 (index 7)
+    min_value = base * (1 - percent / 100)     # 기준값의 -n%
+    max_value = base * (1 + percent / 100)     # 기준값의 +n%
+    mid_index = 7                              # 8번 공 위치 (기준값 자리)
 
-    values = [0] * 15
-    values[0] = round(min_value)       # 1번 공 = -n%
-    values[mid_index] = round(base)    # 8번 공 = 기준값
-    values[14] = round(max_value)      # 15번 공 = +n%
+    values = [0] * 15                          # 15개의 공 위치 초기화
+    values[0] = round(min_value)               # 1번 공 = 최소값 고정
+    values[mid_index] = round(base)            # 8번 공 = 기준값 고정
+    values[14] = round(max_value)              # 15번 공 = 최대값 고정
 
-    # 왼쪽 구간 (공 2~7번) → min ~ base 사이
+    # 왼쪽 구간 (2~7번 공 → index 1~6)
+    # 최소값에서 기준값까지 증가하는 랜덤 값 배치
     for i in range(1, mid_index):
-        random_percent = random.uniform(percent * i / mid_index * 0.9,
-                                        percent * i / mid_index * 1.1)
+        ratio = i / mid_index  # 1/7, 2/7, ..., 6/7
+        random_percent = random.uniform(percent * ratio * 0.9,
+                                        percent * ratio * 1.1)
         values[i] = round(base * (1 - random_percent / 100))
 
-    # 오른쪽 구간 (공 9~14번) → base ~ max 사이
+    # 오른쪽 구간 (9~14번 공 → index 8~13)
+    # 기준값에서 최대값까지 증가하는 랜덤 값 배치
     for i in range(mid_index + 1, 14):
-        step = i - mid_index
-        random_percent = random.uniform(percent * step / (14 - mid_index) * 0.9,
-                                        percent * step / (14 - mid_index) * 1.1)
+        step = i - mid_index  # 1~6
+        ratio = step / (14 - mid_index)  # 1/7, 2/7, ..., 6/7
+        random_percent = random.uniform(percent * ratio * 0.9,
+                                        percent * ratio * 1.1)
         values[i] = round(base * (1 + random_percent / 100))
 
-    # 번호 매핑
+    # 공 번호 매핑 (1번~15번)
     ball_dict = {i + 1: values[i] for i in range(15)}
     return ball_dict
 
