@@ -747,3 +747,8 @@ def generate_ball_dict_randomized(base, percent):
     ball_dict = {i + 1: values[i] for i in range(15)}
     return ball_dict
 
+
+
+
+1번 공 → 97,000,000 원
+2번 공 → 97,429,306 원
