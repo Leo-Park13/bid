@@ -13,29 +13,45 @@ def format_number(event):           # 기초 금액
         entry_base.delete(0, tk.END)
         entry_base.insert(0, "{:,}".format(int(value)))
 
-
 # 공 금액 생성 함수
-def generate_ball_dict(base, percent, order):       
-    min_value = base - (base * percent / 100)       # -n 적용
-    max_value = base + (base * percent / 100)       # +n 적용
+def generate_ball_dict(base, percent, order):
+    min_value = base * (1 - percent / 100)
+    max_value = base * (1 + percent / 100)
+    mid_index = 7  # 8번 공 위치 (기준값 자리)
 
-    values = [0] * 15   # 최대금액 최소금액 기초금액 설정 및 가격을 15개의 공 배치
-    values[0] = int(min_value)
-    values[7] = int(base)
-    values[14] = int(max_value)
+    # 1번, 8번, 15번 번호도 noise_ratio 비율만큼 랜덤 오차적용
+    
+    values = [0] * 15                   # 최대금액 최소금액 기초금액 설정 및 가격을 15개의 공 배치
+    values[0] = round(min_value)        # 1번 공 = 최소값
+    values[mid_index] = round(base)     # 8번 공 = 기초금액액
+    values[14] = round(max_value)       # 15번 공 = 최대값
 
-    lower_step = (base - min_value) / 7     # 기초금액 보단 작은 수 -n%
-    for i in range(1, 7):
-        values[i] = int(min_value + lower_step * i)
+    noise_ratio = 0.5  # 🎯 더 좁은 분포로: n% noise 적용
 
-    upper_step = (max_value - base) / 7     # 기초금액 보단 큰 수 +n%
-    for i in range(8, 14):
-        values[i] = int(base + upper_step * (i - 7))
+    # 왼쪽 구간: 2~7번 (index 1~6)
+    step_left = (base - min_value) / 7
+    for i in range(1, mid_index):
+        clean_value = min_value + step_left * i
+        noise = random.uniform(-step_left * noise_ratio, step_left * noise_ratio)
+        values[i] = round(clean_value + noise)
 
-    if order == 'desc':     # 정렬 방식을 내림차순으로 선택시 공 배치를 거꾸로 돌린다
-        values.reverse()
+    # 오른쪽 구간: 9~14번 (index 8~13)
+    step_right = (max_value - base) / 7
+    for i in range(mid_index + 1, 14):
+        clean_value = base + step_right * (i - mid_index)
+        noise = random.uniform(-step_right * noise_ratio, step_right * noise_ratio)
+        values[i] = round(clean_value + noise)
 
-    return {i + 1: values[i] for i in range(15)}    # 공에 금액을 배치 할때 i 하나에 금액 하나 i는 +1씩 증가한다
+    # values = [0] * 15
+    
+    # 공 배치를 내림차순으로 정렬하고 싶다면
+    if order == 'desc':
+        values.reverse()  # 리스트 뒤집기
+
+    # 공 번호 매핑 (1번부터 15번까지)
+    ball_dict = {i + 1: values[i] for i in range(15)}
+    return ball_dict
+
 
 
 def calculate():                        # 계산 함수
@@ -46,7 +62,7 @@ def calculate():                        # 계산 함수
         percent = 2 if percent_var.get() == 1 else 3    # +- 퍼센트 적용
         order = 'asc' if order_var.get() == 1 else 'desc'   # 정렬 방식 적용
 
-        selected_balls = [i + 1 for i, var in enumerate(ball_vars) if var.get() == 1]       # 1번부터 15번 까지 공 선택택
+        selected_balls = [i + 1 for i, var in enumerate(ball_vars) if var.get() == 1]       # 1번부터 15번 까지 공 선택
         if not selected_balls or not all(1 <= n <= 15 for n in selected_balls):
             raise ValueError("1~15 사이의 공 번호를 최소 1개 이상 선택해주세요.")
 
@@ -68,9 +84,11 @@ def calculate():                        # 계산 함수
         total = sum(final_values)               # 최종금액의 합
         avg = total / len(final_values)         # 최종금액의 평균
         result_bid = int(avg * bid_rate)        # 평균 금액에 투찰율 적용
+        fnumber = int(base * 0.88)              # 기초 금액에 투찰율 적용
+
 
         # 전체 결과 텍스트 출력
-        full_text = "[공 배치]\n"
+        full_text = "[공 배치(복수예비가격)]\n"
         for i in range(1, 16):
             full_text += "{}번 공 → {:,} 원\n".format(i, ball_dict[i])
 
@@ -82,15 +100,17 @@ def calculate():                        # 계산 함수
         for i in top_four:
             full_text += "- {}번 공: {} 회\n".format(i, counter[i])
 
-        full_text += "\n사용된 공 번호:\n"
+        full_text += "\n사용된 공 번호&금액:\n"
         for i in final_balls:
             full_text += "- {}번 공: {:,} 원\n".format(i, ball_dict[i])
-            
+
         full_text += "\n[계산 결과]\n"
         full_text += "총합: {:,} 원\n".format(total)
-        full_text += "평균 금액 (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
+        full_text += "평균 금액(예정가격) (총 {}개 공): {:,} 원\n".format(len(final_values), int(avg))
 
         full_text += "\n[투찰율 적용 금액 ({}%)]: {:,} 원\n".format(bid_rate * 100, result_bid)
+
+        full_text += "\n기초금액 X 0.88 = {:,}원\n".format(fnumber)
 
         result_output_full.delete("1.0", tk.END)
         result_output_full.insert(tk.END, full_text)
@@ -101,7 +121,6 @@ def calculate():                        # 계산 함수
 
     except Exception as e:
         messagebox.showerror("오류", "입력 오류: {}".format(e))
-
 
 
 # === GUI 구성 ===
