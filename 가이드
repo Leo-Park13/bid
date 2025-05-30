@@ -718,39 +718,38 @@ print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(final_ded)
 # =========================================================================
 
 
+import random
+
 def generate_ball_dict(base, percent, order):
     min_value = base * (1 - percent / 100)
     max_value = base * (1 + percent / 100)
-    mid_index = 7  # 8번 공 위치
+    mid_index = 7  # 8번 공 위치 (기준값 자리)
 
     values = [0] * 15
-    values[0] = round(min_value)
-    values[mid_index] = round(base)
-    values[14] = round(max_value)
+    values[0] = round(min_value)        # 1번 공 = 최소값
+    values[mid_index] = round(base)     # 8번 공 = 기준값
+    values[14] = round(max_value)       # 15번 공 = 최대값
 
-    # 🎯 더 좁은 분포로: noise 비율 0.005 (0.5%)
-    noise_ratio = 0.005
+    noise_ratio = 0.005  # 🎯 더 좁은 분포로: 0.5% noise 적용
 
-    # 왼쪽 구간: 2~7번
+    # 왼쪽 구간: 2~7번 (index 1~6)
     step_left = (base - min_value) / 7
     for i in range(1, mid_index):
         clean_value = min_value + step_left * i
         noise = random.uniform(-step_left * noise_ratio, step_left * noise_ratio)
         values[i] = round(clean_value + noise)
 
-    # 오른쪽 구간: 9~14번
+    # 오른쪽 구간: 9~14번 (index 8~13)
     step_right = (max_value - base) / 7
     for i in range(mid_index + 1, 14):
         clean_value = base + step_right * (i - mid_index)
         noise = random.uniform(-step_right * noise_ratio, step_right * noise_ratio)
         values[i] = round(clean_value + noise)
 
+    # 공 배치를 내림차순으로 정렬하고 싶다면
+    if order == 'desc':
+        values.reverse()  # 리스트 뒤집기
 
-    if order == 'desc':     # 정렬 방식을 내림차순으로 선택시 공 배치를 거꾸로 돌린다
-        values.reverse()
-
-        return {i + 1: values[i] for i in range(15)}    # 공에 금액을 배치 할때 i 하나에 금액 하나 i는 +1씩 증가한다
-
-    # 번호 매핑
+    # 공 번호 매핑 (1번부터 15번까지)
     ball_dict = {i + 1: values[i] for i in range(15)}
     return ball_dict
