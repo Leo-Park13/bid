@@ -718,9 +718,7 @@ print("평균 금액의 투찰율 계산 결과: {:,} 원".format(int(final_ded)
 # =========================================================================
 
 
-import random
-
-def generate_ball_dict_randomized(base, percent):
+def generate_ball_dict(base, percent, order):
     min_value = base * (1 - percent / 100)
     max_value = base * (1 + percent / 100)
     mid_index = 7  # 8번 공 위치
@@ -747,14 +745,12 @@ def generate_ball_dict_randomized(base, percent):
         noise = random.uniform(-step_right * noise_ratio, step_right * noise_ratio)
         values[i] = round(clean_value + noise)
 
+
+    if order == 'desc':     # 정렬 방식을 내림차순으로 선택시 공 배치를 거꾸로 돌린다
+        values.reverse()
+
+        return {i + 1: values[i] for i in range(15)}    # 공에 금액을 배치 할때 i 하나에 금액 하나 i는 +1씩 증가한다
+
+    # 번호 매핑
     ball_dict = {i + 1: values[i] for i in range(15)}
     return ball_dict
-
-
-1번 공 → 97,000,000 원
-2번 공 → 97,430,136 원
-3번 공 → 97,855,490 원
-4번 공 → 98,286,834 원
-5번 공 → 98,713,402 원
-6번 공 → 99,144,462 원
-7번 공 → 99,572,148 원
