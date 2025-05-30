@@ -834,6 +834,12 @@ def generate_ball_dict(base, percent, order):
 
 
 
+base_noise = 20_000
+    values[0] = round(min_value + random.randint(-base_noise, base_noise))       # 1번 공
+    values[mid_index] = round(base + random.randint(-base_noise, base_noise))    # 8번 공
+    values[14] = round(max_value + random.randint(-base_noise, base_noise))      # 15번 공
+
+
 1번 공 → 97,000,000 원
 2번 공 → 97,428,423 원
 3번 공 → 97,856,562 원
