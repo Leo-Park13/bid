@@ -861,7 +861,7 @@ def generate_ball_dict(base, percent=0.5, order='asc', noise_ratio=0.01):
 
 
 
-def generate_ball_dict_from_fixed_percent(base, order='asc'):
+def generate_ball_dict_from_fixed_percent(base, percent_list, order='asc'):
     # 복수예비가격 사정율 (상위 8개 + 하위 7개) 총 15개
     percent_list = [
         101.97, 101.67, 101.36, 101.03, 100.86, 100.55, 100.28,
