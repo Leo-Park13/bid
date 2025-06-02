@@ -859,6 +859,8 @@ def generate_ball_dict(base, percent=0.5, order='asc', noise_ratio=0.01):
 8번 공 → 100,000,000 원
 
 
+    # +-2% 기준 공 구간은 (98.00~98.265/101.735~102.000%) 에서 생성되는 예비가격의 범위
+    # +-3% 기준 공 구간은 (97.00~97.3750/102.5714~103.000%) 에서 생성되는 예비가격의 범위
 
 
 def generate_ball_dict_from_fixed_percent(base, percent_list, order='asc'):
