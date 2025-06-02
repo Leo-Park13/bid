@@ -861,4 +861,22 @@ def generate_ball_dict(base, percent=0.5, order='asc', noise_ratio=0.01):
 
 
 
+def generate_ball_dict_from_fixed_percent(base, order='asc'):
+    # 복수예비가격 사정율 (상위 8개 + 하위 7개) 총 15개
+    percent_list = [
+        101.97, 101.67, 101.36, 101.03, 100.86, 100.55, 100.28,
+        100.00,
+        99.75, 99.48, 99.19, 98.93, 98.63, 98.36, 98.03
+    ]
 
+    # 사정율을 적용해 금액 계산
+    values = [round(base * (p / 100), 0) for p in percent_list]
+
+    if order == 'desc':
+        values = sorted(values, reverse=True)
+    else:
+        values = sorted(values)
+
+    # 공 번호 1~15 매핑
+    ball_dict = {i + 1: int(values[i]) for i in range(15)}
+    return ball_dict
