@@ -863,6 +863,55 @@ def generate_ball_dict(base, percent=0.5, order='asc', noise_ratio=0.01):
     # +-3% 기준 공 구간은 (97.00~97.3750/102.5714~103.000%) 에서 생성되는 예비가격의 범위
 
 
+import random
+
+def generate_ball_dict_precise_3percent(base, order='asc'):
+    """
+    ±3% 기준에서 각 공 번호(1~15)에 대해 세부 사정율 범위를 적용하여 금액을 무작위로 생성.
+    
+    Args:
+        base (int): 기준 금액
+        order (str): 'asc' 또는 'desc' 정렬 방식
+
+    Returns:
+        dict: {공 번호: 금액} 형태의 딕셔너리
+    """
+
+    percent_ranges = [
+        (97.0000, 97.3750),
+        (97.3750, 97.7500),
+        (97.7500, 98.1250),
+        (98.1250, 98.5000),
+        (98.5000, 98.8750),
+        (98.8750, 99.2500),
+        (99.2500, 99.6250),
+        (99.6250, 100.3750),  # 기준
+        (100.3750, 100.7500),
+        (100.7500, 101.1250),
+        (101.1250, 101.5000),
+        (101.5000, 101.8750),
+        (101.8750, 102.2500),
+        (102.2500, 102.5714),
+        (102.5714, 103.0000)
+    ]
+
+    values = [
+        round(base * (random.uniform(low, high) / 100))
+        for (low, high) in percent_ranges
+    ]
+
+    if order == 'desc':
+        values = sorted(values, reverse=True)
+    else:
+        values = sorted(values)
+
+    return {i + 1: values[i] for i in range(15)}
+
+
+////
+
+
+
 def generate_ball_dict_from_fixed_percent(base, percent_list, order='asc'):
     # 복수예비가격 사정율 (상위 8개 + 하위 7개) 총 15개
     percent_list = [
