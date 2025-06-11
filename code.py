@@ -1019,43 +1019,105 @@ def generate_ball_dict_from_fixed_percent(base, percent_list, order='asc'):
 
 
 # 추가 해볼거
+
 import tkinter as tk
 
+# +-2% 범위 리스트
+percent_list2 = [
+    (98.000, 98.266),
+    (98.266, 98.533),
+    (98.533, 98.800),
+    (98.800, 99.067),
+    (99.067, 99.333),
+    (99.333, 99.600),
+    (99.600, 99.867),
+    (99.867, 100.133),  # 기준
+    (100.133, 100.400),
+    (100.400, 100.667),
+    (100.667, 100.933),
+    (100.933, 101.200),
+    (101.200, 101.467),
+    (101.467, 101.734),
+    (101.734, 102.000)
+]
+
+# +-3% 범위 리스트
+percent_list3 = [
+    (97.0000, 97.3750),
+    (97.3750, 97.7500),
+    (97.7500, 98.1250),
+    (98.1250, 98.5000),
+    (98.5000, 98.8750),
+    (98.8750, 99.2500),
+    (99.2500, 99.6250),
+    (99.6250, 100.3750),  # 기준
+    (100.3750, 100.7500),
+    (100.7500, 101.1250),
+    (101.1250, 101.5000),
+    (101.5000, 101.8750),
+    (101.8750, 102.2500),
+    (102.2500, 102.5714),
+    (102.5714, 103.0000)
+]
+
 def on_percent_change():
+    global percent, current_list
     selected = percent_var.get()
-    if selected == 1:
-        listbox.selection_clear(0, tk.END)
-        listbox.selection_set(1)  # 리스트의 두 번째 항목 (인덱스 1)
-    elif selected == 2:
-        listbox.selection_clear(0, tk.END)
-        listbox.selection_set(2)  # 리스트의 세 번째 항목 (인덱스 2)
+    percent = 2 if selected == 1 else 3
+    current_list = percent_list2 if percent == 2 else percent_list3
 
+    # 리스트박스 항목 선택
+    listbox.selection_clear(0, tk.END)
+    index_to_select = 1 if selected == 1 else 2
+    listbox.selection_set(index_to_select)
+
+def calculate():
+    selected_index = listbox.curselection()
+    if not selected_index:
+        result_label.config(text="리스트에서 항목을 선택하세요.")
+        return
+
+    index = selected_index[0]
+    if index >= len(current_list):
+        result_label.config(text="선택된 인덱스가 리스트 범위를 벗어났습니다.")
+        return
+
+    min_val, max_val = current_list[index]
+    result_label.config(text=f"±{percent}% 구간: {min_val:.4f} ~ {max_val:.4f}")
+
+# GUI 구성
 root = tk.Tk()
-
 frame_inputs = tk.Frame(root)
 frame_inputs.pack(padx=10, pady=10)
 
 percent_var = tk.IntVar(value=1)
+percent = 2
+current_list = percent_list2
 
+# 라벨 및 라디오 버튼
 tk.Label(frame_inputs, text="± 퍼센트 선택", font=("Helvetica", 11)).grid(row=0, column=0, sticky="w", pady=(10, 0))
-
 tk.Radiobutton(frame_inputs, text="±2%", variable=percent_var, value=1, font=("Helvetica", 11), command=on_percent_change).grid(row=0, column=1, sticky="w")
 tk.Radiobutton(frame_inputs, text="±3%", variable=percent_var, value=2, font=("Helvetica", 11), command=on_percent_change).grid(row=0, column=2, sticky="w")
 
-# 리스트박스 생성
-listbox = tk.Listbox(frame_inputs, height=5)
+# 리스트박스
+listbox = tk.Listbox(frame_inputs, height=15)
 listbox.grid(row=1, column=0, columnspan=3, pady=(10, 0), sticky="w")
 
-# 예시 항목 추가
-items = ["항목 1", "항목 2", "항목 3", "항목 4"]
-for item in items:
-    listbox.insert(tk.END, item)
+# 리스트 항목 이름만 출력 (ex. "구간 0", "구간 1", ...)
+for i in range(15):
+    listbox.insert(tk.END, f"구간 {i}")
 
-# 초기 선택 반영
+# 계산 버튼
+tk.Button(frame_inputs, text="계산 실행", command=calculate).grid(row=2, column=0, columnspan=3, pady=10)
+
+# 결과 라벨
+result_label = tk.Label(frame_inputs, text="", font=("Helvetica", 11), fg="blue")
+result_label.grid(row=3, column=0, columnspan=3)
+
+# 초기 설정
 on_percent_change()
 
 root.mainloop()
-
 
 
 
