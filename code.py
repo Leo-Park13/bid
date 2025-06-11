@@ -1018,7 +1018,43 @@ def generate_ball_dict_from_fixed_percent(base, percent_list, order='asc'):
     # ]
 
 
+# 추가 해볼거
+import tkinter as tk
 
+def on_percent_change():
+    selected = percent_var.get()
+    if selected == 1:
+        listbox.selection_clear(0, tk.END)
+        listbox.selection_set(1)  # 리스트의 두 번째 항목 (인덱스 1)
+    elif selected == 2:
+        listbox.selection_clear(0, tk.END)
+        listbox.selection_set(2)  # 리스트의 세 번째 항목 (인덱스 2)
+
+root = tk.Tk()
+
+frame_inputs = tk.Frame(root)
+frame_inputs.pack(padx=10, pady=10)
+
+percent_var = tk.IntVar(value=1)
+
+tk.Label(frame_inputs, text="± 퍼센트 선택", font=("Helvetica", 11)).grid(row=0, column=0, sticky="w", pady=(10, 0))
+
+tk.Radiobutton(frame_inputs, text="±2%", variable=percent_var, value=1, font=("Helvetica", 11), command=on_percent_change).grid(row=0, column=1, sticky="w")
+tk.Radiobutton(frame_inputs, text="±3%", variable=percent_var, value=2, font=("Helvetica", 11), command=on_percent_change).grid(row=0, column=2, sticky="w")
+
+# 리스트박스 생성
+listbox = tk.Listbox(frame_inputs, height=5)
+listbox.grid(row=1, column=0, columnspan=3, pady=(10, 0), sticky="w")
+
+# 예시 항목 추가
+items = ["항목 1", "항목 2", "항목 3", "항목 4"]
+for item in items:
+    listbox.insert(tk.END, item)
+
+# 초기 선택 반영
+on_percent_change()
+
+root.mainloop()
 
 
 
