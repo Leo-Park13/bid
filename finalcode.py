@@ -52,7 +52,7 @@ def generate_ball_dict(base, percent, order):
     ball_dict = {i + 1: values[i] for i in range(15)}
     return ball_dict
 
-
+# 1,8,15의 공 금액은 변하지 않고 나머지 2-7, 9-14 공 금액은 변동 but 앞 번호 금액은 뒷 번호 금액 보다 적어야 한다
 
 def calculate():                        # 계산 함수
     try:
