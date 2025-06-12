@@ -26,7 +26,7 @@ def generate_ball_dict(base, percent, order):
     values[mid_index] = round(base)     # 8번 공 = 기초금액액
     values[14] = round(max_value)       # 15번 공 = 최대값
 
-    noise_ratio = 0.5  # 🎯 더 좁은 분포로: n% noise 적용
+    noise_ratio = 0.99999999  # 🎯 더 좁은 분포로: n% noise 적용
 
     # 왼쪽 구간: 2~7번 (index 1~6)
     step_left = (base - min_value) / 7
